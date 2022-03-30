@@ -26,7 +26,7 @@ const getApi = async (url) => {
         <p>Localizacion: ${location.name}</p>
         <p>Episodios: ${lengthEpisode}</p>
         <p>Origen: ${origin.name}</p>
-        <button  onclick="modal('${status}')">Ver mas</button>
+        <button onclick="modal('${status}', '${location.name}', '${origin.name}', '${image}')">Ver mas</button>
         `;
     });
   } catch (error) {
@@ -34,8 +34,19 @@ const getApi = async (url) => {
   }
 };
 
-const modal = (estado) => {
-  console.log(estado);
-};
+function modal(status, location, origin, image) {
+  const createModal = document.createElement("div");
+  createModal.classList.add("modal");
+  divPersonajes.appendChild(createModal);
+  createModal.innerHTML = `
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <img src="${image}">
+      <p>Estado: ${status}</p>
+      <p>Localizacion: ${location}</p>
+      <p>Origen: ${origin}</p>
+    </div>
+  `;
+}
 
 getApi(URL_API);
