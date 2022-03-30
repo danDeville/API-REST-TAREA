@@ -1,47 +1,72 @@
 // llamar APi
 const URL_API = "https://rickandmortyapi.com/api/character";
-const search = "https://rickandmortyapi.com/api/character/?name=";
-const divPersonajes = document.querySelector(".personajes");
+const SEARCH = "https://rickandmortyapi.com/api/character/?name=";
+const form = document.getElementById("form");
+const search = document.getElementById("search");
+const main = document.getElementById("main");
+const dialog = document.querySelector("dialog");
 
-const getApi = async (url) => {
+// buscar personaje hacia la API
+const getPersonajes = async (url) => {
   try {
     const res = await fetch(url);
-    const data = await res.json();
-
-    data.results.forEach((personaje) => {
-      const { image, name, species, episode, status, origin, location } =
-        personaje;
-
-      const lengthEpisode = episode.length;
-
-      //   modal(status);
-
-      const card = document.createElement("div");
-      card.classList.add("card-personaje");
-      divPersonajes.appendChild(card);
-      card.innerHTML = `
-        <img src="${image}" alt="${name}">
-        <h2>Nombre: ${name}</h2>
-        <p>Especies: ${species}</p>
-        <p>Localizacion: ${location.name}</p>
-        <p>Episodios: ${lengthEpisode}</p>
-        <p>Origen: ${origin.name}</p>
-        <button onclick="modal('${status}', '${location.name}', '${origin.name}', '${image}')">Ver mas</button>
-        `;
-    });
+    if (res.status === 404) {
+      alert("No hay personajes");
+    } else {
+      const data = await res.json();
+      console.log(data.results);
+      showPersonajes(data.results);
+    }
   } catch (error) {
     console.log(error);
   }
 };
 
+getPersonajes(URL_API);
+
+// mostrar personajes
+const showPersonajes = (personajes) => {
+  if (personajes.length == 0) {
+    alert("No hay personajes");
+  } else {
+    main.innerHTML = "";
+    personajes.forEach((personaje) => {
+      const { image, name, species, episode, status, origin, location } =
+        personaje;
+      // const episodios = episode.length
+      const tarjetaPersonaje = document.createElement("div");
+      tarjetaPersonaje.classList.add("personaje");
+      tarjetaPersonaje.innerHTML += `
+        <img src="${image}" alt="${name}">
+        <h2>${name}</h2>
+        <p>${species}</p>
+        <button onclick="modal('${status}', '${location.name}', '${origin.name}', '${image}')">Ver más</button>
+      `;
+      main.appendChild(tarjetaPersonaje);
+    });
+  }
+};
+
+// buscar personaje
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const buscar = search.value;
+  if (buscar !== "") {
+    getPersonajes(SEARCH + buscar);
+  } else {
+    window.location.reload();
+  }
+});
+
+// modal que muestra los detalles del personaje
 function modal(status, location, origin, image) {
   const createModal = document.createElement("div");
   createModal.classList.add("modal");
-  divPersonajes.appendChild(createModal);
+  main.appendChild(createModal);
   createModal.innerHTML = `
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <img src="${image}">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <img src="${image}" />
       <p>Estado: ${status}</p>
       <p>Localizacion: ${location}</p>
       <p>Origen: ${origin}</p>
@@ -49,4 +74,8 @@ function modal(status, location, origin, image) {
   `;
 }
 
-getApi(URL_API);
+// cerra modal
+function closeModal() {
+  const modal = document.querySelector(".modal");
+  modal.remove();
+}
