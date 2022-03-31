@@ -38,9 +38,11 @@ const showPersonajes = (personajes) => {
       tarjetaPersonaje.classList.add("personaje");
       tarjetaPersonaje.innerHTML += `
         <img src="${image}" alt="${name}">
-        <h2>${name}</h2>
-        <p>${species}</p>
-        <button onclick="modal('${status}', '${location.name}', '${origin.name}', '${image}')">Ver más</button>
+        <div class="personaje-info">
+          <h2>${name}</h2>
+          <p>${species}</p>
+          <button onclick="modal('${status}', '${location.name}', '${origin.name}', '${image}')">Ver más</button>
+        </div>
       `;
       main.appendChild(tarjetaPersonaje);
     });
@@ -67,9 +69,12 @@ function modal(status, location, origin, image) {
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <img src="${image}" />
-      <p>Estado: ${status}</p>
-      <p>Localizacion: ${location}</p>
-      <p>Origen: ${origin}</p>
+
+      <section class="modal-content_info">
+        <p>Estado: ${status}</p>
+        <p>Localizacion: ${location}</p>
+        <p>Origen: ${origin}</p>
+      </section>
     </div>
   `;
 }
